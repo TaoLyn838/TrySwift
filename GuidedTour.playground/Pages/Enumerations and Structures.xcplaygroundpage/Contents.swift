@@ -4,7 +4,7 @@
 //:
 enum Rank: Int {
     case ace = 1
-    case two, three, four, five, six, seven, eight, nine, ten
+    case two, three, four, five, six, seven, eight, nine, ten //, eleven
     case jack, queen, king
 
     func simpleDescription() -> String {
@@ -12,7 +12,7 @@ enum Rank: Int {
             case .ace:
                 return "ace"
             case .jack:
-                return "jack"
+            return "jack raw value: \(self.rawValue)"
             case .queen:
                 return "queen"
             case .king:
@@ -22,8 +22,27 @@ enum Rank: Int {
         }
     }
 }
+
 let ace = Rank.ace
+
 let aceRawValue = ace.rawValue
+
+// rawValue() means the index of case enum. the defualt first raw value is 0 but can changed by by explicitly specifying values, such as 'case ace = 1' at line 6.
+// example:
+// if uncomment 'eleven' case at line 7, the rawValue of 'jack' will become 12. (currently the raw value of jack is 11).
+let jackRawValue = Rank.simpleDescription(Rank.jack)()
+
+func rankValueComparsion(case1: Rank, case2: Rank, compare: (Rank, Rank) -> Rank ) -> Void {
+    compare(case1, case2)
+}
+
+rankValueComparsion(case1: Rank.jack, case2: Rank.king, compare: {
+    return ($0.rawValue > $1.rawValue) ? $0 : $1
+})
+
+
+
+
 
 //: - Experiment:
 //: Write a function that compares two `Rank` values by comparing their raw values.
@@ -32,6 +51,9 @@ let aceRawValue = ace.rawValue
 //:
 //: Use the `init?(rawValue:)` initializer to make an instance of an enumeration from a raw value. It returns either the enumeration case matching the raw value or `nil` if there’s no matching `Rank`.
 //:
+
+
+
 if let convertedRank = Rank(rawValue: 3) {
     let threeDescription = convertedRank.simpleDescription()
 }
