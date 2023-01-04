@@ -49,7 +49,6 @@ class NamedShape {
 }
 //:Notice how `self` is used to distinguish the `name` property from the name argument to the initializer. The arguments to the initializer are passed like a function call when you create an instance of the class. Every property needs a value assigned—either in its declaration (as with `numberOfSides`) or in the initializer (as with `name`).
 //:Use `deinit` to create a deinitializer if you need to perform some cleanup before the object is deallocated.
-
 class Bank {
     static var coinsInBank = 10_000
     static func distribute(coins numberOfCoinsRequested: Int) -> Int {
@@ -81,6 +80,11 @@ print("A new player has joined the game with \(playerOne!.coinsInPurse) coins")
 print("There are now \(Bank.coinsInBank) coins left in the bank")
 // Prints "There are now 9900 coins left in the bank"
 
+
+//: Why do classes have `deinit` and structs don't?
+//: 1. A main reason is that `struct` is fairly simple: the `struct` is destroyed when whatever owns it no longer exists. So, if we create a `struct` inside a method and the methods ends, the `struct` is destroyed.
+//: 1. For `class`, having complex copying behavior that means several copies of the `class` can exist in various parts of your program. Thus, swift uses `deinit` to check if an instance is destroyed – when the final variable pointing to it has gone away.
+//:
 //:`deinit` allow user to do something before user to clean up a object. Here set `playerOne` to `nil`, but player's coins will return to bank becasue of `deinit` at line 79-81.
 //:
 //:
@@ -321,5 +325,77 @@ Unwrap.getEntropy()
 //:
 //: So, by using `private` here I’m asking Swift to enforce the rules for me: don’t let me read or write this property from anywhere outside the User struct.
 //:
+struct Book {
 
+    let title: String
+    let author: String
+
+}
+
+let book = Book(title: "dd", author: "XX")
+
+//: `internal` allows use from any source file in the defining module but not from outside that module. This is generally the default access level.
+//: See https://stackoverflow.com/questions/35294071/swift-2-internal-vs-private
+//:
+
+class Author {
+    var name: String
+    let dob: String
+    init (name: String, dob: String) {
+        self.name = name
+        self.dob = dob
+    }
+    init() {
+        name = "XXX"
+        dob = "9/20/1997"
+    }
+    
+    internal init (name: String) {
+        self.name = name
+        dob = "9/20/1997"
+    }
+}
+
+//: `Final` classes are ones that cannot be inherited from, which means it’s not possible for users of your code to add functionality or change what they have.
+final class UserInfo {
+    var name = "..."
+    let id = "10001"
+    let dob = "09/09/1963"
+    
+    func printUserInfo() -> Void {
+        print("User name: \(name), id: \(id), day of birth: \(dob)")
+    }
+    
+}
+
+// error here
+//class NoOtherClassCanInheritFromFinal: UserInfo {
+//
+//}
+
+//: Differences between structs and classes
+//: 1. `Variable` classes can have `variable` properties changed
+//: 1. `Constant` classes can have `variable` properties changed
+//: 1. `Variable` structs can have `variable` properties changed
+//: 1. `Constant` structs cannot have `variable` properties changed
+//:
+var user1 = UserInfo()
+
+// user name changed from "..." to "Coln"
+user1.name = "Coln"
+
+struct VarAndConStruct {
+    var num: Int
+    var str: String
+}
+
+var varStruct = VarAndConStruct(num: 1, str: "a")
+let constStruct = VarAndConStruct(num: 2, str: "b")
+
+varStruct.num = 3
+
+// Error: Cannot assign to property: 'constStruct' is a 'let' constant
+//constStruct.num = 4
+//: Because when you are changing a variable in struct, you are essentially recreating that struct type.
+//:
 //: [Previous](@previous) | [Next](@next)

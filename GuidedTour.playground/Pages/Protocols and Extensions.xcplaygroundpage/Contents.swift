@@ -2,6 +2,9 @@
 //:
 //: Use `protocol` to declare a protocol.
 //:
+//: Similar as `abstract` or `Interface` in `Java`
+//:
+
 protocol ExampleProtocol {
      var simpleDescription: String { get }
      mutating func adjust()
@@ -9,6 +12,8 @@ protocol ExampleProtocol {
 
 //: Classes, enumerations, and structures can all adopt protocols.
 //:
+//: `protocol` determine the minimum required functionality, but we can always add more.
+
 class SimpleClass: ExampleProtocol {
      var simpleDescription: String = "A very simple class."
      var anotherProperty: Int = 69105
